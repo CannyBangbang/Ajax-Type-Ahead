@@ -3,14 +3,53 @@
 
 <head>
   <meta charset="UTF-8">
-  <title></title>
+  <title>Ajax Type Ahead</title>
+  <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  <script src="script.js"></script>
 </head>
 
 <body>
+  <form class="search-form">
+    <input type="text" class="search" placeholder="City or State">
+    <ul class="suggestions"></ul>
+  </form>
 
+  <script>
+    const cityJSON = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+    const cities = [];
+    fetch(cityJSON)
+      .then(blob => blob.json())
+      .then(data => cities.push(...data))
 
+    function findMatch(wordToMatch, cities) {
+      return cities.filter(place => {
+        const regex = new RegExp(wordToMatch, 'gi');
+        return place.city.match(regex) || place.state.match(regex);
+      });
+    }
+    function numberWithCommas(x) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+    function displayMatches() {
+      const matchArray = findMatch(this.value, cities);
+      const newHTML = matchArray.map(place => {
+        const regex = new RegExp(this.value, 'gi');
+        const HighlightedCityName = place.city.replace(regex, `<span class="highlight">${this.value}</span>`);
+        const HighlightedStateName = place.state.replace(regex, `<span class="highlight">${this.value}</span>`);
+        return `
+    <li>
+      <span class="name">${HighlightedCityName}, ${HighlightedStateName}</span>
+      <span class="population">${numberWithCommas(place.population)}</span>
+    </lit>
+    `;
+      }).join('');
+      suggestions.innerHTML = newHTML;
+    }
+    const searchInput = document.querySelector('.search');
+    const suggestions = document.querySelector('.suggestions');
+    searchInput.addEventListener('change', displayMatches);
+    searchInput.addEventListener('keyup', displayMatches);
+  </script>
 </body>
 
 </html>

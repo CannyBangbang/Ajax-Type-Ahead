@@ -6,3 +6,4 @@ This project is licensed under the Apache License - see the LICENSE file for det
 
 ## Acknowledgments
 JavaScript30 by Wes Bos provided challange and reference material - https://javascript30.com/
+Rich Jones/Miserlou provided json file with list of cities - https://gist.github.com/Miserlou/
